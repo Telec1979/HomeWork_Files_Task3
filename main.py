@@ -1,41 +1,21 @@
-with open('1.txt', 'rt', encoding='utf-8') as f1:
-    text1 = f1.readlines() # объявляем список, читаем в него построчно файл 1
-with open('2.txt', 'rt', encoding='utf-8') as f2:
-    text2 = f2.readlines() # объявляем список, читаем в него построчно файл 2
-with open('3.txt', 'rt', encoding='utf-8') as f3:
-    text3 = f3.readlines() # объявляем список, читаем в него построчно файл 3
+import os # Импортируем модуль для работы с операционной системой
+
+def compile_files(files_list): # Определяем функцию записи в новый файл
+    data = {} # Определяем словарь, где будем хранить содержимое файлов
+    for file in files_list: # Для каждого файла из переданного списка
+        with open(file, encoding="utf-8") as f: # открываем файл на чтение
+            file_data = f.readlines() # Читаем содержимое в список
+            data[len(file_data)] = (file, " ".join(file_data)) # Добавляем в словарь запись, где ключ количество строк, значение -список из названия файла и его содержимого
+
+    data = dict(sorted(data.items())) # сортируем словарь по значениям
+
+    with open("result_data.txt", "w", encoding="utf-8") as new_file: # Открываем итоговый файл на запись
+        for key, value in data.items(): # Для каждой записи отсортированного словаря 
+            new_file.write(f"{value[0]} \n") # Записываем в файл название файла
+            new_file.write(f"{key} \n") # Записываем количество строк
+            new_file.write(f"{value[1]} \n") # Записываем текст
 
 
-def res_write(name_file, text): # объявляем функцию записи в файл
-    with open('result.txt', 'at', encoding='utf-8') as res:
-        res.write(f'{name_file}\n')
-        res.write(f'{str(len(text))}\n')
-        for line in text:
-            res.write(line)
-        res.write('\n')
-
-# Используя условный оператор сравниваем количество строк в файлах и для каждого вызываем объявленную функцию.
-if len(text1) < len(text2) < len(text3):
-    res_write('1.txt', text1)
-    res_write('2.txt', text2)
-    res_write('3.txt', text3)
-elif len(text1) < len(text3) < len(text2):
-    res_write('1.txt', text1)
-    res_write('3.txt', text3)
-    res_write('2.txt', text2)
-elif len(text2) < len(text1) < len(text3):
-    res_write('2.txt', text2)
-    res_write('1.txt', text1)
-    res_write('3.txt', text3)
-elif len(text2) < len(text3) < len(text1):
-    res_write('2.txt', text2)
-    res_write('3.txt', text3)
-    res_write('1.txt', text1)1
-elif len(text3) < len(text1) < len(text2):
-    res_write('3.txt', text3)
-    res_write('1.txt', text1)
-    res_write('2.txt', text2)2
-elif len(text3) < len(text2) < len(text1):
-    res_write('3.txt', text3)
-    res_write('2.txt', text2)
-    res_write('1.txt', text1)
+files = ["1.txt", "2.txt", "3.txt"] # Определяем список с именами фавйлов
+files = [os.path.join(os.getcwd(), file) for file in files] # Для каждого файла из списка добавляем путь к нему
+compile_files(files) # Вызываем функцию записи для определенного списка с именами файлов
